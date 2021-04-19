@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<title>HandWritten Digit Recognition</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+	<!-- Bootstrap CSS -->
+    <link href="{{url_for('static', filename='css/bttn.css')}}" rel="stylesheet" />
+	<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" />
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h1>HandWritten Digit Recognition</h1>
+
+				<div class="centered" id="darwPadDiv">
+					<canvas id="drawPad" width="128" height="128"></canvas>
+				</div>
+				
+				<div class="centered">
+					<!-- <input type="button" class="myButton" value="Predict" style="bttn-unite bttn-md bttn-primary"> -->
+					<button class="bttn-unite bttn-md bttn-primary myButton" value="Predict" >Predict</button>
+					<button class="bttn-unite bttn-md bttn-danger clearButton" id="clearButton">Clear</button>
+				</div>
+			
+				<div class="centered">
+					<h1 id="result"></h1>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+
+	<!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="{{url_for('static',filename='js/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{url_for('static',filename='js/jquery-3.2.0.min.js')}}"></script>
+	<script src="{{url_for('static',filename='js/drawpad.js')}}"></script>
+	<script type="text/javascript">
+		$(".myButton").click(function () {
+            $("#result").text("");
+			$('#result').append('<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>');
+			var $SCRIPT_ROOT = {{ request.script_root| tojson | safe
+		}};
+		var canvasObj = document.getElementById("drawPad");
+		var dataURL = canvasObj.toDataURL();
+		$.ajax({
+			type: "POST",
+			url: $SCRIPT_ROOT + "/predict/",
+			data: dataURL,
+			success: function (data) {
+				$('#result').text('Predicted Output: ' + data);
+			}
+		});
+});
+
+		$("#clearButton").click( function() {
+			$("#result").text("");
+		});
+	</script>
+</body>
+
+</html>
