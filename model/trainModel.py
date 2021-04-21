@@ -7,6 +7,7 @@ from tensorflow.keras import backend as K
 import numpy as np
 import json
 
+# Load the npz dataset
 def loadDataset(path):
     f = np.load(path)
     x_train, y_train = f['x_train'], f['y_train']
@@ -18,10 +19,10 @@ batch_size = 128
 num_classes = 10
 epochs = 10
 
-# input image dimensions
+# Input image dimensions
 img_rows, img_cols = 28, 28
 
-# the data, shuffled and split between train and test sets
+# The data, shuffled and split between train and test sets
 (x_train, y_train), (x_test, y_test) = loadDataset('./dataset/mnist.npz')
 
 if K.image_data_format() == 'channels_first':
@@ -45,7 +46,7 @@ y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 print(input_shape)
 
-# train the model
+# Build the model
 model = Sequential()
 model.add(Conv2D(filters=32, kernel_size=(5, 5), padding='Same', activation='relu',
                  input_shape=(28, 28, 1)))
@@ -61,19 +62,21 @@ model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.25))
 model.add(Dense(10, activation='softmax'))
 model.summary()
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-# evaluate the model
+# Train the model
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.fit(x_train, y_train, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(x_test, y_test))
+
+# Evaluate the trained model
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
-# model json for flask web use
+# model.json for flask web use
 with open('model.json', 'w') as outfile:
     json.dump(model.to_json(), outfile)
 
 
-# save the model
+# Save the model
 model_file = 'model_190382372.h5'
 model.save(model_file)
