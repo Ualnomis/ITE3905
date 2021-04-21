@@ -7,7 +7,7 @@ from tensorflow.keras import backend as K
 import numpy as np
 import json
 
-# Load the npz dataset
+# Function to load the npz dataset
 def loadDataset(path):
     f = np.load(path)
     x_train, y_train = f['x_train'], f['y_train']
@@ -15,6 +15,7 @@ def loadDataset(path):
     f.close()
     return (x_train, y_train), (x_test, y_test)
 
+# set the batch_size, epochs, num_classes
 batch_size = 128
 num_classes = 10
 epochs = 10

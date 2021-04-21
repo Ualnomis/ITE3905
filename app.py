@@ -31,18 +31,14 @@ def predict():
     predictedResult = np.argmax(model.predict(img), axis=-1)[0]
     # try to print result
     print(predictedResult)
-    # response = model.predict_classes(img)[0]
     return str(predictedResult)  
     
-
-
 def saveImage(imgBase64):
     # decode base64
     imageStr = re.search(b'base64,(.*)', imgBase64).group(1)
     # save as inputedDigit.png
     with open('./inputedDigit.png', 'wb') as output:
         output.write(base64.decodebytes(imageStr))
-
 
 if __name__ == '__main__':
     app.run(host="192.168.50.2", port=5000)
